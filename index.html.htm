@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes langues</title>
+<style>
+  /* ===== COULEURS ===== */
+  :root {
+    --fond:#f4f5fb;
+    --texte:#1e2140;
+    --gris:#6b6f8e;
+    --bleu:#4f46e5;
+    --vert:#16a34a;
+    --rouge:#dc2626;
+    --blanc:#ffffff;
+    --ligne:#e2e3ef;
+    --ombre:0 10px 30px rgba(40,40,90,.10);
+  }
+
+  * { box-sizing:border-box; }
+  body { font-family: system-ui, "Segoe UI", sans-serif; background:var(--fond); color:var(--texte);
+         margin:0; min-height:100vh; overflow-x:hidden; }
+
+  /* Bulles de couleur qui bougent doucement derrière le site */
+  .fond { position:fixed; inset:0; z-index:-1; overflow:hidden; }
+  .fond span { position:absolute; border-radius:50%; filter:blur(70px); opacity:.45;
+               animation: flotter 18s ease-in-out infinite alternate; }
+  .fond span:nth-child(1) { width:420px; height:420px; background:#a5b4fc; top:-120px; left:-100px; }
+  .fond span:nth-child(2) { width:360px; height:360px; background:#f9a8d4; bottom:-120px; right:-80px; animation-delay:-6s; }
+  .fond span:nth-child(3) { width:300px; height:300px; background:#86efac; top:40%; left:55%; animation-delay:-12s; }
+  @keyframes flotter { to { transform: translate(60px, 40px) scale(1.15); } }
+
+  /* ===== EN-TÊTE ===== */
+  .entete { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+            max-width:760px; margin:0 auto; padding:20px 16px; }
+  .logo { background:none; border:none; font-size:1.35rem; font-weight:800; color:var(--texte); cursor:pointer; }
+  .langues { display:flex; background:var(--blanc); border-radius:999px; padding:4px; box-shadow:var(--ombre); }
+  .langues button { border:none; background:none; padding:8px 16px; border-radius:999px; cursor:pointer;
+                    font-size:.95rem; color:var(--gris); transition: background .25s, color .25s; }
+  .langues button.actif { background:var(--bleu); color:white; }
+  .pastilles { display:flex; gap:8px; }
+  .pastille { background:var(--blanc); padding:8px 14px; border-radius:999px; box-shadow:var(--ombre);
+              font-weight:700; border:none; font-size:.95rem; color:var(--texte); }
+  #chrono { cursor:pointer; min-width:92px; transition: background .2s; }
+  #chrono.pause { background:#fde68a; }
+
+  main { max-width:760px; margin:0 auto; padding:0 16px 60px; transition: filter .3s, opacity .3s; }
+  main.floute { filter:blur(4px); opacity:.5; pointer-events:none; }
+  .ecran { animation: entree .45s ease backwards; }
+  .cache { display:none !important; }
+  @keyframes entree { from { opacity:0; transform:translateY(16px); } }
+
+  .carte { background:var(--blanc); border-radius:20px; padding:26px; box-shadow:var(--ombre); }
+  .retour { background:none; border:none; color:var(--gris); cursor:pointer; font-size:.95rem;
+            padding:6px 0; margin-bottom:10px; }
+  .retour:hover { color:var(--bleu); }
+  .petit { color:var(--gris); font-size:.9rem; }
+  .centre { text-align:center; }
+  h1 { margin:10px 0 4px; font-size:2rem; }
+  h2 { margin:0 0 12px; font-size:1.3rem; }
+  h3 { margin:22px 0 10px; font-size:1.05rem; }
+
+  /* Barre de pause */
+  .barre-pause { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:30;
+                 background:var(--texte); color:white; padding:14px 18px; border-radius:16px;
+                 display:flex; align-items:center; gap:14px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+                 animation: entree .3s ease backwards; }
+
+  /* ===== ACCUEIL ===== */
+  .objectif { margin:20px 0 14px; }
+  .objectif .ligne { display:flex; justify-content:space-between; font-weight:600; margin-bottom:10px; gap:10px; }
+  .barre { height:14px; background:#e7e8f3; border-radius:999px; overflow:hidden; }
+  .barre div { height:100%; width:0; border-radius:999px;
+               background:linear-gradient(90deg, #6366f1, #22c55e); transition: width .9s ease; }
+
+  .a-faire { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .hero { display:flex; align-items:center; gap:14px; border:none; border-radius:20px; padding:20px;
+          text-align:left; cursor:pointer; color:white; box-shadow:var(--ombre);
+          transition: transform .2s, box-shadow .2s; animation: entree .5s ease backwards; }
+  .hero:hover { transform: translateY(-4px); box-shadow:0 16px 36px rgba(40,40,90,.18); }
+  .hero .emoji { font-size:2.4rem; }
+  .hero b { display:block; font-size:1.15rem; }
+  .hero small { opacity:.92; }
+  .h-parcours { background:linear-gradient(135deg, #4f46e5, #0ea5e9); }
+  .h-revision { background:linear-gradient(135deg, #f59e0b, #ef4444); animation-delay:.07s; }
+  .h-bilan { background:linear-gradient(135deg, #10b981, #0d9488); grid-column:1 / -1; }
+
+  .choix-theme { display:flex; align-items:center; gap:12px; margin:22px 0 14px; padding:16px 20px; }
+  .choix-theme label { font-weight:600; white-space:nowrap; }
+  .choix-theme select { flex:1; min-width:0; padding:10px 12px; font-size:1rem; border:2px solid var(--ligne);
+                        border-radius:12px; background:var(--blanc); color:var(--texte); cursor:pointer; }
+  .choix-theme select:focus { border-color:var(--bleu); outline:none; }
+
+  .menu { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; }
+  .tuile { border:none; border-radius:18px; padding:18px 16px; text-align:left; cursor:pointer; color:white;
+           box-shadow:var(--ombre); transition: transform .2s, box-shadow .2s;
+           animation: entree .5s ease backwards; }
+  .tuile:hover { transform: translateY(-5px) rotate(-1deg); box-shadow:0 16px 36px rgba(40,40,90,.18); }
+  .tuile .emoji { font-size:2rem; display:block; margin-bottom:6px; transition: transform .3s; }
+  .tuile:hover .emoji { transform: scale(1.2) rotate(8deg); }
+  .tuile b { display:block; font-size:1.05rem; }
+  .tuile small { opacity:.9; font-size:.8rem; }
+  .t1 { background:linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .t2 { background:linear-gradient(135deg, #f97316, #ec4899); animation-delay:.05s; }
+  .t3 { background:linear-gradient(135deg, #14b8a6, #22c55e); animation-delay:.25s; }
+  .t4 { background:linear-gradient(135deg, #0ea5e9, #6366f1); grid-column:1 / -1; animation-delay:.3s; }
+  .t5 { background:linear-gradient(135deg, #e11d48, #f97316); animation-delay:.1s; }
+  .t6 { background:linear-gradient(135deg, #7c3aed, #db2777); animation-delay:.15s; }
+  .t7 { background:linear-gradient(135deg, #0891b2, #14b8a6); animation-delay:.2s; }
+  .conseil { margin-top:16px; }
+
+  /* ===== BOUTONS ===== */
+  .actions { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin-top:20px; }
+  .actions button, .gros { padding:12px 22px; border:none; border-radius:12px; cursor:pointer;
+                           font-size:1rem; color:white; font-weight:600; transition: transform .15s; }
+  .actions button:hover, .gros:hover { transform: scale(1.05); }
+  .actions button:active, .gros:active { transform: scale(.96); }
+  .reveler { background:var(--bleu); }
+  .ok { background:var(--vert); }
+  .pasok { background:var(--rouge); }
+  .gris { background:#e7e8f3 !important; color:var(--texte) !important; }
+  .son { background:rgba(255,255,255,.25); border:none; border-radius:50%; width:44px; height:44px;
+         font-size:1.3rem; cursor:pointer; margin-top:12px; transition: transform .2s; }
+  .son:hover { transform: scale(1.15); }
+  .mini-son { background:none; border:none; cursor:pointer; font-size:1.1rem; padding:2px 6px; }
+  .score { margin-top:18px; color:var(--gris); text-align:center; }
+
+  /* ===== FLASHCARD QUI SE RETOURNE ===== */
+  .flip { perspective:1000px; height:230px; cursor:pointer; }
+  .flip-dedans { position:relative; height:100%; transition: transform .6s cubic-bezier(.4,.2,.2,1);
+                 transform-style:preserve-3d; }
+  .flip.retourne .flip-dedans { transform: rotateY(180deg); }
+  .face { position:absolute; inset:0; border-radius:20px; backface-visibility:hidden;
+          display:flex; flex-direction:column; align-items:center; justify-content:center;
+          padding:20px; box-shadow:var(--ombre); text-align:center; }
+  .avant { background:var(--blanc); font-size:2.1rem; font-weight:700; }
+  .avant small { font-size:.85rem; font-weight:400; color:var(--gris); margin-top:14px; }
+  .dos { background:linear-gradient(135deg, #6366f1, #22c55e); color:white; font-size:2rem;
+         font-weight:700; transform: rotateY(180deg); }
+
+  /* ===== QUIZ ===== */
+  .question { font-size:1.9rem; font-weight:700; text-align:center; margin:8px 0 18px; }
+  .choix { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .choix button { padding:16px 10px; font-size:1.05rem; border:2px solid var(--ligne); border-radius:14px;
+                  background:var(--blanc); cursor:pointer; color:var(--texte);
+                  transition: transform .15s, border-color .15s; animation: entree .35s ease backwards; }
+  .choix button:nth-child(2) { animation-delay:.05s; }
+  .choix button:nth-child(3) { animation-delay:.1s; }
+  .choix button:nth-child(4) { animation-delay:.15s; }
+  .choix button:hover:enabled { border-color:var(--bleu); transform: translateY(-2px); }
+  .choix button.bon { background:var(--vert); color:white; border-color:var(--vert); animation: pop .4s; }
+  .choix button.mauvais { background:var(--rouge); color:white; border-color:var(--rouge); }
+
+  /* ===== JEU DES PAIRES ===== */
+  .colonnes { display:flex; gap:12px; margin-top:15px; }
+  .colonnes > div { flex:1; }
+  .colonnes button { display:block; width:100%; padding:14px 6px; margin:8px 0; font-size:.95rem;
+                     border:2px solid var(--ligne); border-radius:12px; background:var(--blanc);
+                     color:var(--texte); cursor:pointer; transition: all .2s; }
+  .colonnes button:hover:enabled { transform: translateY(-2px); }
+  .colonnes button.choisi { border-color:var(--bleu); background:#eef0ff; transform: scale(1.04); }
+  .colonnes button.trouve { background:var(--vert); color:white; border-color:var(--vert);
+                            animation: pop .4s; opacity:.55; cursor:default; }
+  .colonnes button.faux { background:var(--rouge); color:white; border-color:var(--rouge); }
+
+  /* ===== ÉCRIRE / DICTÉE ===== */
+  .ligne-saisie { display:flex; gap:10px; margin-top:6px; }
+  .saisie { flex:1; min-width:0; padding:14px 16px; font-size:1.2rem; border:2px solid var(--ligne);
+            border-radius:14px; outline:none; transition: border-color .2s; font-family:inherit; }
+  .saisie:focus { border-color:var(--bleu); }
+  .saisie:disabled { background:#f7f7fb; }
+  .ecoute { display:flex; justify-content:center; gap:12px; margin:10px 0 20px; }
+  .gros-son { width:84px; height:84px; border-radius:50%; border:none; font-size:2.2rem; cursor:pointer;
+              background:linear-gradient(135deg, #6366f1, #0ea5e9); color:white; box-shadow:var(--ombre);
+              transition: transform .2s; }
+  .gros-son:hover { transform: scale(1.08); }
+  .lent { align-self:center; background:var(--blanc); border:2px solid var(--ligne); border-radius:999px;
+          padding:10px 16px; cursor:pointer; font-size:.95rem; }
+  .correction { margin-top:16px; }
+  .correction > div { margin-top:8px; }
+  .bravo { color:var(--vert); font-weight:700; font-size:1.2rem; animation: pop .4s; }
+  .erreur { color:var(--rouge); font-weight:700; }
+  .solution { font-size:1.4rem; font-weight:700; }
+  .diff { font-family: ui-monospace, Consolas, monospace; font-size:1.25rem; letter-spacing:1px; }
+  .l-ok { color:var(--vert); }
+  .l-manque { color:var(--rouge); text-decoration:underline; font-weight:700; }
+  .l-trop { color:var(--rouge); text-decoration:line-through; }
+  .copies { font-size:1.4rem; letter-spacing:6px; color:var(--vert); }
+  .alerte { background:#fef3c7; border-radius:12px; padding:10px 14px; font-size:.9rem; margin-bottom:14px; }
+
+  /* ===== CONSTRUIRE DES PHRASES ===== */
+  .ligne-phrase { min-height:62px; border-bottom:3px dashed var(--ligne); padding:8px 0; display:flex;
+                  flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; transition: border-color .2s; }
+  .ligne-phrase.juste { border-color:var(--vert); }
+  .ligne-phrase.faux { border-color:var(--rouge); }
+  .banque { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:18px; min-height:50px; }
+  .tuile-mot { padding:10px 14px; font-size:1.05rem; border:2px solid var(--ligne); border-bottom-width:4px;
+               border-radius:12px; background:var(--blanc); color:var(--texte); cursor:pointer;
+               animation: pop .25s; }
+  .tuile-mot:hover { border-color:var(--bleu); }
+
+  /* ===== SÉRIE (leçon, révision, bilan) ===== */
+  .serie-haut { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .serie-haut .barre { flex:1; height:10px; }
+  .serie-haut span { color:var(--gris); font-size:.9rem; white-space:nowrap; }
+
+  /* ===== PARCOURS ===== */
+  .mois { margin-bottom:22px; }
+  .lecon-item { display:flex; align-items:center; gap:14px; width:100%; text-align:left; background:var(--blanc);
+                border:2px solid transparent; border-radius:16px; padding:14px 16px; margin:8px 0; cursor:pointer;
+                box-shadow:var(--ombre); color:var(--texte); font-size:1rem; transition: transform .15s, border-color .15s;
+                animation: entree .4s ease backwards; }
+  .lecon-item:hover:enabled { transform: translateX(4px); border-color:var(--bleu); }
+  .lecon-item:disabled { cursor:default; opacity:.55; box-shadow:none; }
+  .lecon-item.actuelle { border-color:var(--bleu); }
+  .badge { flex:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center;
+           justify-content:center; font-weight:800; background:#e7e8f3; }
+  .fait .badge { background:var(--vert); color:white; }
+  .actuelle .badge { background:var(--bleu); color:white; animation: battre 1.6s ease-in-out infinite; }
+  @keyframes battre { 50% { transform: scale(1.1); } }
+  .lecon-item small { display:block; color:var(--gris); }
+
+  .explication { font-size:1.05rem; line-height:1.7; }
+  .explication table { border-collapse:collapse; margin:10px 0; }
+  .explication td { padding:4px 14px 4px 0; border:none; }
+  em.dire { font-style:normal; font-weight:700; color:var(--bleu); cursor:pointer;
+            border-bottom:2px dotted currentColor; }
+  em.dire:hover { color:#0ea5e9; }
+  .liste-mots { width:100%; border-collapse:collapse; }
+  .liste-mots td { padding:10px 4px; border-bottom:1px solid #eef0f6; }
+  .liste-mots td:last-child { text-align:right; }
+
+  /* ===== PROGRÈS ===== */
+  .tuiles-stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:16px; }
+  .stat { background:var(--blanc); border-radius:16px; padding:14px; box-shadow:var(--ombre); }
+  .stat b { display:block; font-size:1.5rem; }
+  .stat span { color:var(--gris); font-size:.8rem; }
+
+  .graphique { position:relative; margin-top:10px; }
+  .graphique svg { width:100%; height:auto; display:block; overflow:visible; }
+  .grille { stroke:#e7e8f3; stroke-width:1; }
+  .repere { stroke:var(--gris); stroke-width:1; stroke-dasharray:4 4; }
+  .axe { fill:var(--gris); font-size:11px; }
+  .barre-graph { fill:var(--bleu); pointer-events:none; transform-box:fill-box; transform-origin:bottom;
+                 animation: pousser .7s cubic-bezier(.3,1.4,.5,1) both; }
+  .cible { fill:transparent; cursor:default; }
+  .cible:hover { fill:rgba(79,70,229,.07); }
+  @keyframes pousser { from { transform: scaleY(0); } }
+  .infobulle { position:absolute; pointer-events:none; background:var(--texte); color:white;
+               padding:8px 10px; border-radius:10px; font-size:.85rem; white-space:nowrap;
+               transform:translate(-50%, calc(-100% - 10px)); opacity:0; transition: opacity .15s; }
+
+  table.tableau { width:100%; border-collapse:collapse; margin-top:10px; font-size:.92rem; }
+  table.tableau td { padding:9px 4px; border-bottom:1px solid #eef0f6; }
+  .points { letter-spacing:2px; color:var(--vert); white-space:nowrap; }
+  .mini-barre { height:8px; background:#e7e8f3; border-radius:999px; overflow:hidden; min-width:80px; }
+  .mini-barre div { height:100%; background:var(--bleu); border-radius:999px; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes pop { 50% { transform: scale(1.12); } }
+  .secoue { animation: secouer .4s; }
+  @keyframes secouer { 20%,60% { transform:translateX(-8px); } 40%,80% { transform:translateX(8px); } }
+
+  .bulle { position:fixed; transform:translate(-50%, 0); font-weight:800; font-size:1.3rem;
+           pointer-events:none; z-index:40; animation: monter 1s ease-out forwards; white-space:nowrap; }
+  @keyframes monter { to { transform:translate(-50%, -60px); opacity:0; } }
+
+  .confetti { position:fixed; top:-20px; width:9px; height:15px; z-index:50; pointer-events:none;
+              border-radius:2px; animation: tomber linear forwards; }
+  @keyframes tomber { to { transform: translateY(110vh) rotate(760deg); } }
+
+  /* ===== TÉLÉPHONE ===== */
+  @media (max-width: 600px) {
+    .tuiles-stats, .menu { grid-template-columns:repeat(2, 1fr); }
+    .a-faire { grid-template-columns:1fr; }
+    .choix { grid-template-columns:1fr; }
+    h1 { font-size:1.6rem; }
+    .question { font-size:1.5rem; }
+    .carte { padding:20px; }
+  }
+
+  /* Si l'ordinateur demande moins d'animations */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="fond"><span></span><span></span><span></span></div>
+
+<header class="entete">
+  <button class="logo" onclick="changerMode('Accueil')">🌍 Mes langues</button>
+  <div class="langues">
+    <button id="btnEN" onclick="changerLangue('en')">Anglais</button>
+    <button id="btnNL" onclick="changerLangue('nl')">Néerlandais</button>
+  </div>
+  <div class="pastilles">
+    <button class="pastille" id="chrono" onclick="basculerPause()"
+            title="Temps de travail aujourd'hui. Clique pour mettre en pause.">⏱️ 0 min</button>
+    <div class="pastille" id="flamme" title="Jours d'affilée où tu as travaillé">🔥 0</div>
+  </div>
+</header>
+
+<div class="barre-pause cache" id="barrePause">
+  <span>⏸️ Pause — le chrono est arrêté</span>
+  <button class="gros ok" onclick="basculerPause()">▶️ Reprendre</button>
+</div>
+
+<main id="principal">
+
+<!-- ===== MENU D'ACCUEIL ===== -->
+<section class="ecran" id="zoneAccueil">
+  <h1 id="salut">Salut ! 👋</h1>
+  <div class="petit" id="sousTitre"></div>
+
+  <div class="carte objectif">
+    <div class="ligne"><span>🎯 Objectif du jour</span><span id="objectifTexte">0 / 25 min</span></div>
+    <div class="barre"><div id="objectifBarre"></div></div>
+    <div class="petit" style="margin-top:10px">
+      Seul le temps où tu t'exerces compte. Le chrono se met en pause tout seul si tu ne fais rien pendant 1 minute.
+    </div>
+  </div>
+
+  <div class="a-faire">
+    <button class="hero h-parcours" onclick="changerMode('Parcours')">
+      <span class="emoji">📘</span><span><b>Mon parcours</b><small id="infoParcours"></small></span>
+    </button>
+    <button class="hero h-revision" onclick="changerMode('Revision')">
+      <span class="emoji">🔁</span><span><b>Révision du jour</b><small id="infoRevision"></small></span>
+    </button>
+    <button class="hero h-bilan cache" id="carteBilan" onclick="changerMode('Bilan')">
+      <span class="emoji">📝</span><span><b>Ton bilan de la semaine t'attend</b><small>20 questions pour voir où tu en es</small></span>
+    </button>
+  </div>
+
+  <div class="carte choix-theme">
+    <label for="choixTheme">📚 Thème</label>
+    <select id="choixTheme" onchange="changerTheme(this.value)"></select>
+  </div>
+
+  <div class="menu">
+    <button class="tuile t1" onclick="changerMode('Cartes')">
+      <span class="emoji">🃏</span><b>Flashcards</b><small>Retourne les cartes</small>
+    </button>
+    <button class="tuile t2" onclick="changerMode('Quiz')">
+      <span class="emoji">❓</span><b>Quiz</b><small>Trouve la bonne réponse</small>
+    </button>
+    <button class="tuile t5" onclick="changerMode('Ecrire')">
+      <span class="emoji">✍️</span><b>Écrire</b><small>Écris le mot de mémoire</small>
+    </button>
+    <button class="tuile t6" onclick="changerMode('Dictee')">
+      <span class="emoji">🎧</span><b>Dictée</b><small>Écoute et écris</small>
+    </button>
+    <button class="tuile t7" onclick="changerMode('Phrases')">
+      <span class="emoji">🧱</span><b>Phrases</b><small>Remets les mots en ordre</small>
+    </button>
+    <button class="tuile t3" onclick="changerMode('Jeu')">
+      <span class="emoji">🧩</span><b>Jeu des paires</b><small>Relie les mots, vite !</small>
+    </button>
+    <button class="tuile t4" onclick="changerMode('Progres')">
+      <span class="emoji">📈</span><b>Mes progrès</b><small>Ton temps par jour, tes bilans, ton carnet d'erreurs</small>
+    </button>
+  </div>
+
+  <div class="carte conseil petit">
+    💡 <b>Ta séance idéale (25 min)</b> : 5 min de révision du jour → la leçon du jour (10 min)
+    → 5 min d'Écrire ou de Phrases → 5 min de Dictée.
+  </div>
+</section>
+
+<!-- ===== FLASHCARDS ===== -->
+<section class="ecran cache" id="zoneCartes">
+  <button class="retour" onclick="changerMode('Accueil')">← Menu</button>
+  <div class="flip" id="flip" onclick="reveler()">
+    <div class="flip-dedans">
+      <div class="face avant"><span id="motFr">...</span><small id="motTheme"></small></div>
+      <div class="face dos" id="faceDos"></div>
+    </div>
+  </div>
+  <div class="actions" id="actions"></div>
+  <div class="score" id="score"></div>
+</section>
+
+<!-- ===== QUIZ ===== -->
+<section class="ecran cache" id="zoneQuiz">
+  <button class="retour" onclick="changerMode('Accueil')">← Menu</button>
+  <div class="carte" id="quizCarte">
+    <div class="petit centre">Choisis la bonne traduction</div>
+    <div class="question" id="quizMot">...</div>
+    <div class="choix" id="quizChoix"></div>
+    <div class="score" id="quizScore"></div>
+  </div>
+</section>
+
+<!-- ===== JEU DES PAIRES ===== -->
+<section class="ecran cache" id="zoneJeu">
+  <button class="retour" onclick="changerMode('Accueil')">← Menu</button>
+  <div class="carte">
+    <div class="petit centre">Relie chaque mot à sa traduction, le plus vite possible !</div>
+    <div class="colonnes">
+      <div id="jeuGauche"></div>
+      <div id="jeuDroite"></div>
+    </div>
+    <div class="score" id="jeuMessage"></div>
+  </div>
+</section>
+
+<!-- ===== ÉCRIRE, DICTÉE, PHRASES, PARCOURS, LEÇON, RÉVISION, BILAN, ERREURS ===== -->
+<section class="ecran cache" id="zoneTravail">
+  <button class="retour" id="retourTravail">← Menu</button>
+  <h2 id="titreTravail"></h2>
+  <div id="travail"></div>
+</section>
+
+<!-- ===== PROGRÈS ===== -->
+<section class="ecran cache" id="zoneProgres">
+  <button class="retour" onclick="changerMode('Accueil')">← Menu</button>
+  <div class="tuiles-stats" id="tuilesStats"></div>
+
+  <div class="carte">
+    <b>Minutes de travail par jour</b>
+    <div class="petit">Les 14 derniers jours, les deux langues ensemble — passe la souris sur une barre</div>
+    <div class="graphique" id="graphique"></div>
+  </div>
+
+  <div class="carte" style="margin-top:16px">
+    <b id="titreBilans">📝 Mes bilans</b>
+    <div id="listeBilans"></div>
+  </div>
+
+  <div class="carte" style="margin-top:16px">
+    <b>📕 Carnet d'erreurs</b>
+    <div class="petit">Les mots et phrases où tu te trompes souvent.</div>
+    <div id="carnet"></div>
+  </div>
+
+  <div class="carte" style="margin-top:16px">
+    <b id="titreMots">Tes mots</b>
+    <table class="tableau" id="progresTable"></table>
+    <div class="actions">
+      <button class="gris" onclick="effacerProgres()">Tout remettre à zéro</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Le vocabulaire est dans mots.js et les leçons dans lecons.js (même dossier) -->
+<script src="mots.js"></script>
+<script src="lecons.js"></script>
+<script>
+// ======================================================================
+// ===== RÉGLAGES =====
+// ======================================================================
+const OBJECTIF_MIN = 25;               // minutes de travail par jour
+const NIVEAU_MAX = 5;
+const INTERVALLES = [0, 1, 3, 7, 14, 30]; // dans combien de jours on revoit un mot, selon son niveau
+const SCORE_POUR_REUSSIR = 80;         // % pour réussir une leçon
+
+// ======================================================================
+// ===== LES MOTS ET LES PHRASES =====
+// ======================================================================
+// mots.en / mots.nl  : les mots de mots.js
+// phrases.en / .nl   : les phrases des leçons de lecons.js
+const mots = { en: [], nl: [] };
+for (const t of THEMES) {
+  for (const [fr, en, nl] of t.mots) {
+    mots.en.push({ fr, trad:en, theme:t.nom });
+    mots.nl.push({ fr, trad:nl, theme:t.nom });
+  }
+}
+const phrases = { en: [], nl: [] };
+LECONS.forEach((l, i) => {
+  for (const [fr, en, nl] of l.phrases) {
+    const base = { fr, theme:"📘 Leçon " + (i + 1), lecon:i, phrase:true, cle:"§" + fr };
+    phrases.en.push({ ...base, trad:en });
+    phrases.nl.push({ ...base, trad:nl });
+  }
+});
+
+// ======================================================================
+// ===== LA MÉMOIRE DU PROGRAMME =====
+// ======================================================================
+let langue = "en";
+let mode = "Accueil";
+let motActuel = null;
+let reussis = 0;
+let rates = 0;
+
+// Gardé dans le navigateur (localStorage), même après fermeture :
+// progres = le niveau de chaque mot / phrase
+// stats   = par jour : réponses justes / totales, et secondes de travail
+// suivi   = résultats des leçons et des bilans
+function charger(nom) {
+  try { return JSON.parse(localStorage.getItem(nom)) || {}; } catch (e) { return {}; }
+}
+let progres = charger("progres");
+let stats = charger("stats");
+let suivi = charger("suivi");
+suivi.lecons = suivi.lecons || { en:{}, nl:{} };
+suivi.bilans = suivi.bilans || { en:[], nl:[] };
+
+function sauver() {
+  try {
+    localStorage.setItem("progres", JSON.stringify(progres));
+    localStorage.setItem("stats", JSON.stringify(stats));
+    localStorage.setItem("suivi", JSON.stringify(suivi));
+  } catch (e) {}
+}
+
+// Le thème choisi ("Tous" = tous les mots mélangés)
+let theme = "Tous";
+try { theme = localStorage.getItem("theme") || "Tous"; } catch (e) {}
+if (theme !== "Tous" && !THEMES.some(t => t.nom === theme)) theme = "Tous";
+
+function listeMots() {
+  return theme === "Tous" ? mots[langue] : mots[langue].filter(m => m.theme === theme);
+}
+
+function changerTheme(nouveau) {
+  theme = nouveau;
+  try { localStorage.setItem("theme", theme); } catch (e) {}
+  afficherAccueil();
+}
+
+// ======================================================================
+// ===== OUTILS =====
+// ======================================================================
+function melanger(liste) {
+  const copie = liste.slice();
+  for (let i = copie.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copie[i], copie[j]] = [copie[j], copie[i]];
+  }
+  return copie;
+}
+
+// Enlève les mots qui ont la même traduction (pour ne pas avoir 2 fois "de bank")
+function sansDoublons(liste) {
+  return liste.filter((m, i) => liste.findIndex(x => x.trad === m.trad) === i);
+}
+
+// Crée un élément HTML : el("div", { class:"x", onclick:... }, "texte", autreElement...)
+function el(balise, proprietes = {}, ...enfants) {
+  const e = document.createElement(balise);
+  for (const cle in proprietes) {
+    if (cle === "class") e.className = proprietes[cle];
+    else if (cle.startsWith("on")) e[cle] = proprietes[cle];
+    else e.setAttribute(cle, proprietes[cle]);
+  }
+  e.append(...enfants.filter(x => x !== null && x !== undefined && x !== false));
+  return e;
+}
+
+function creerBouton(texte, action, classe) {
+  return el("button", { class: classe || "", onclick: action }, texte);
+}
+
+// Relance une animation CSS sur un élément
+function animer(element, classe) {
+  element.classList.remove(classe);
+  void element.offsetWidth;
+  element.classList.add(classe);
+}
+
+// Petit texte qui s'envole ("+1", "Bravo !"...)
+function bulle(texte, element, couleur) {
+  const r = element.getBoundingClientRect();
+  const b = el("div", { class:"bulle" }, texte);
+  b.style.left = (r.left + r.width / 2) + "px";
+  b.style.top = r.top + "px";
+  b.style.color = couleur;
+  document.body.append(b);
+  setTimeout(() => b.remove(), 1000);
+}
+
+// Pluie de confettis 🎉
+function confettis() {
+  const couleurs = ["#6366f1", "#ec4899", "#22c55e", "#f97316", "#0ea5e9", "#facc15"];
+  for (let i = 0; i < 80; i++) {
+    const c = el("div", { class:"confetti" });
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = couleurs[i % couleurs.length];
+    c.style.animationDuration = (1.8 + Math.random() * 1.8) + "s";
+    c.style.animationDelay = (Math.random() * .5) + "s";
+    document.body.append(c);
+    setTimeout(() => c.remove(), 4500);
+  }
+}
+
+function nomLangue() { return langue === "en" ? "anglais" : "néerlandais"; }
+
+// ======================================================================
+// ===== PRONONCIATION =====
+// ======================================================================
+// Utilise les voix installées sur l'ordinateur (marche sans internet).
+function voixPour(lng) {
+  if (!("speechSynthesis" in window)) return null;
+  const v = speechSynthesis.getVoices().filter(x => x.lang.toLowerCase().replace("_", "-").startsWith(lng));
+  return v.find(x => x.localService) || v[0] || null;
+}
+
+function voixManquante() {
+  if (!("speechSynthesis" in window)) return true;
+  return speechSynthesis.getVoices().length > 0 && !voixPour(langue);
+}
+
+function parler(texte, vitesse = 0.9) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const phrase = new SpeechSynthesisUtterance(texte.replace(/\([^)]*\)/g, "").replace(/\.\.\./g, ""));
+  phrase.lang = (langue === "en") ? "en-GB" : "nl-NL";
+  const voix = voixPour(langue);
+  if (voix) phrase.voice = voix;
+  phrase.rate = vitesse;
+  speechSynthesis.speak(phrase);
+}
+
+function alerteVoix() {
+  if (!voixManquante()) return null;
+  return el("div", { class:"alerte" },
+    "⚠️ Ton ordinateur n'a pas de voix pour le " + nomLangue() + ". Installe-la une fois (ça marche ensuite sans internet) : " +
+    "Paramètres Windows → Heure et langue → Voix → Ajouter des voix.");
+}
+
+// ======================================================================
+// ===== CHRONO : SEULEMENT LE TEMPS OÙ ON S'EXERCE =====
+// ======================================================================
+const MODES_SANS_CHRONO = ["Accueil", "Progres", "Parcours"];
+const VEILLE_APRES = 60 * 1000;   // 1 minute sans rien toucher = pause automatique
+let enPause = false;
+let derniereActivite = Date.now();
+let secondesNonSauvees = 0;
+
+for (const evenement of ["pointerdown", "keydown", "wheel", "touchmove"]) {
+  document.addEventListener(evenement, () => { derniereActivite = Date.now(); }, true);
+}
+
+function chronoActif() {
+  return !enPause
+      && !MODES_SANS_CHRONO.includes(mode)
+      && document.visibilityState === "visible"
+      && Date.now() - derniereActivite < VEILLE_APRES;
+}
+
+function secondesJour(jour) { return (stats[jour] && stats[jour].sec) || 0; }
+
+setInterval(() => {
+  const actif = chronoActif();
+  if (actif) {
+    const jour = cleJour(new Date());
+    stats[jour] = stats[jour] || {};
+    const avant = stats[jour].sec || 0;
+    stats[jour].sec = avant + 1;
+    if (avant < OBJECTIF_MIN * 60 && avant + 1 >= OBJECTIF_MIN * 60) {
+      confettis();
+      bulle("Objectif du jour atteint ! 🎉", document.getElementById("chrono"), "var(--vert)");
+    }
+    if (++secondesNonSauvees >= 5) { sauver(); secondesNonSauvees = 0; }
+  }
+  majChrono(actif);
+}, 1000);
+
+window.addEventListener("pagehide", sauver);
+
+function majChrono(actif) {
+  const b = document.getElementById("chrono");
+  const min = Math.floor(secondesJour(cleJour(new Date())) / 60);
+  if (enPause)                             b.textContent = "⏸️ Pause";
+  else if (actif)                          b.textContent = "⏱️ " + min + " min";
+  else if (MODES_SANS_CHRONO.includes(mode)) b.textContent = "⏱️ " + min + " min";
+  else                                     b.textContent = "💤 " + min + " min";
+  b.classList.toggle("pause", enPause);
+}
+
+function basculerPause() {
+  enPause = !enPause;
+  document.getElementById("barrePause").classList.toggle("cache", !enPause);
+  document.getElementById("principal").classList.toggle("floute", enPause);
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  majChrono(chronoActif());
+}
+
+// ======================================================================
+// ===== STATS PAR JOUR =====
+// ======================================================================
+function cleJour(date) {
+  return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0")
+         + "-" + String(date.getDate()).padStart(2, "0");
+}
+
+function dansNJours(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return cleJour(d);
+}
+
+function statJour(jour, lng) {
+  return (stats[jour] && stats[jour][lng]) || { justes:0, total:0 };
+}
+
+function totalJour(jour) {
+  return statJour(jour, "en").total + statJour(jour, "nl").total;
+}
+
+function ajouterStat(juste) {
+  const jour = cleJour(new Date());
+  const s = statJour(jour, langue);
+  s.total++;
+  if (juste) s.justes++;
+  stats[jour] = stats[jour] || {};
+  stats[jour][langue] = s;
+  sauver();
+  majEntete();
+}
+
+// Nombre de jours d'affilée où tu as travaillé
+function jourTravaille(jour) { return secondesJour(jour) >= 60 || totalJour(jour) > 0; }
+
+function serieJours() {
+  let n = 0;
+  const d = new Date();
+  if (!jourTravaille(cleJour(d))) d.setDate(d.getDate() - 1);   // pas encore joué aujourd'hui : on ne casse pas la série
+  while (jourTravaille(cleJour(d))) {
+    n++;
+    d.setDate(d.getDate() - 1);
+  }
+  return n;
+}
+
+// ======================================================================
+// ===== NIVEAU DE CHAQUE MOT + RÉVISION AU BON MOMENT =====
+// ======================================================================
+// Juste → le niveau monte et le mot revient plus tard (1 jour, 3 jours, 7 jours...).
+// Faux  → retour au niveau 0, le mot revient aujourd'hui.
+function cle(m) { return langue + "|" + (m.cle || m.fr); }
+
+function infos(m) {
+  return progres[cle(m)] || { niveau:0, vus:0, reussis:0 };
+}
+
+function noter(m, juste) {
+  const p = infos(m);
+  p.vus++;
+  if (juste) { p.reussis++; p.niveau = Math.min(NIVEAU_MAX, p.niveau + 1); }
+  else       { p.niveau = 0; }
+  p.prochaine = dansNJours(INTERVALLES[p.niveau]);
+  progres[cle(m)] = p;
+  ajouterStat(juste);
+}
+
+function aReviser(m) {
+  const p = infos(m);
+  return p.vus > 0 && (!p.prochaine || p.prochaine <= cleJour(new Date()));
+}
+
+function erreurs(m) { const p = infos(m); return p.vus - p.reussis; }
+function dansCarnet(m) { return erreurs(m) >= 2 && infos(m).niveau < 3; }
+
+// Tire au hasard, mais les mots mal connus ou à réviser ont plus de chances.
+function choisirDans(liste, eviter) {
+  if (liste.length > 1) liste = liste.filter(m => m !== eviter);
+  let total = 0;
+  const poids = liste.map(m => {
+    const w = NIVEAU_MAX + 1 - infos(m).niveau + (aReviser(m) ? 3 : 0);
+    total += w;
+    return w;
+  });
+  let tirage = Math.random() * total;
+  for (let i = 0; i < liste.length; i++) {
+    tirage -= poids[i];
+    if (tirage < 0) return liste[i];
+  }
+  return liste[0];
+}
+
+function choisirMot(eviter) { return choisirDans(listeMots(), eviter); }
+
+// Les mots avec "..." au milieu ("ik ben ... jaar oud") ne vont pas pour écrire
+function okPourEcrire(m) { return !/\.\.\.\s*\S/.test(m.trad); }
+function okPourDictee(m) { return okPourEcrire(m) && !/[\/(]/.test(m.trad); }
+
+// ======================================================================
+// ===== LEÇONS : DÉBLOCAGE =====
+// ======================================================================
+function scoreLecon(i) { return suivi.lecons[langue][i] || 0; }
+function leconReussie(i) { return scoreLecon(i) >= SCORE_POUR_REUSSIR; }
+function leconOuverte(i) { return i === 0 || leconReussie(i - 1); }
+function prochaineLecon() {
+  for (let i = 0; i < LECONS.length; i++) if (!leconReussie(i)) return i;
+  return -1;
+}
+function phrasesDebloquees() { return phrases[langue].filter(p => leconOuverte(p.lecon)); }
+function motsDeLecon(i) {
+  return LECONS[i].mots.map(fr => mots[langue].find(m => m.fr === fr)).filter(Boolean);
+}
+
+// ======================================================================
+// ===== NAVIGATION =====
+// ======================================================================
+const ZONES = ["Accueil", "Cartes", "Quiz", "Jeu", "Progres"];   // les autres modes utilisent zoneTravail
+const TRAVAIL = {
+  Ecrire:   { titre:"✍️ Écrire",                lancer: () => modeLibre("ecrire") },
+  Dictee:   { titre:"🎧 Dictée",                lancer: () => modeLibre("dictee") },
+  Phrases:  { titre:"🧱 Construire des phrases", lancer: () => modeLibre("phrase") },
+  Parcours: { titre:"📘 Mon parcours",           lancer: afficherParcours },
+  Lecon:    { titre:"",                          lancer: afficherLecon, retour:"Parcours" },
+  Revision: { titre:"🔁 Révision du jour",       lancer: lancerRevision },
+  Carnet:   { titre:"📕 Travailler mes erreurs", lancer: lancerCarnet, retour:"Progres" },
+  Bilan:    { titre:"📝 Bilan de la semaine",    lancer: lancerBilan }
+};
+
+function changerLangue(nouvelle) {
+  langue = nouvelle;
+  document.getElementById("btnEN").className = (langue === "en") ? "actif" : "";
+  document.getElementById("btnNL").className = (langue === "nl") ? "actif" : "";
+  if (mode === "Lecon") mode = "Parcours";
+  changerMode(mode);
+}
+
+function changerMode(nouveau) {
+  mode = nouveau;
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  const zoneVisible = ZONES.includes(mode) ? mode : "Travail";
+  for (const z of [...ZONES, "Travail"]) {
+    const zone = document.getElementById("zone" + z);
+    zone.classList.toggle("cache", z !== zoneVisible);
+    if (z === zoneVisible) animer(zone, "ecran");
+  }
+  if (mode === "Accueil") afficherAccueil();
+  if (mode === "Cartes")  motSuivant();
+  if (mode === "Quiz")    questionSuivante();
+  if (mode === "Jeu")     nouveauJeu();
+  if (mode === "Progres") afficherProgres();
+  if (TRAVAIL[mode]) {
+    const t = TRAVAIL[mode];
+    document.getElementById("titreTravail").textContent = t.titre;
+    const retour = document.getElementById("retourTravail");
+    retour.textContent = t.retour === "Parcours" ? "← Mon parcours" : t.retour === "Progres" ? "← Mes progrès" : "← Menu";
+    retour.onclick = () => changerMode(t.retour || "Accueil");
+    document.getElementById("travail").innerHTML = "";
+    t.lancer();
+  }
+  majEntete();
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+
+function zoneTravail() { return document.getElementById("travail"); }
+
+function majEntete() {
+  document.getElementById("flamme").textContent = "🔥 " + serieJours();
+  majChrono(chronoActif());
+}
+
+// ======================================================================
+// ===== ACCUEIL =====
+// ======================================================================
+function afficherAccueil() {
+  const heure = new Date().getHours();
+  document.getElementById("salut").textContent = (heure < 18 ? "Bonjour" : "Bonsoir") + " ! 👋";
+  document.getElementById("sousTitre").textContent =
+    "On révise l'" + nomLangue() + " ? Commence par ton parcours ou ta révision du jour.";
+
+  // Objectif en minutes
+  const min = Math.floor(secondesJour(cleJour(new Date())) / 60);
+  const pourcent = Math.min(100, Math.round(min / OBJECTIF_MIN * 100));
+  document.getElementById("objectifTexte").textContent = min >= OBJECTIF_MIN
+    ? "Objectif atteint ! 🎉 " + min + " min"
+    : min + " / " + OBJECTIF_MIN + " min (" + pourcent + " %)";
+  const barre = document.getElementById("objectifBarre");
+  barre.style.width = "0";
+  setTimeout(() => { barre.style.width = pourcent + "%"; }, 50);
+
+  // Parcours
+  const p = prochaineLecon();
+  document.getElementById("infoParcours").textContent = p === -1
+    ? "Mois 1 terminé 🎉 La suite arrive bientôt"
+    : "Leçon " + (p + 1) + " : " + LECONS[p].titre;
+
+  // Révision
+  const n = aReviserAujourdhui().length;
+  document.getElementById("infoRevision").textContent = n
+    ? n + " mot" + (n > 1 ? "s" : "") + " à revoir aujourd'hui"
+    : "Rien à revoir aujourd'hui ✓";
+
+  // Bilan : une fois par semaine, quand on a vu assez de mots
+  const derniers = suivi.bilans[langue];
+  const dernier = derniers.length ? derniers[derniers.length - 1].jour : null;
+  const assez = [...mots[langue], ...phrases[langue]].filter(m => infos(m).vus > 0).length >= 20;
+  document.getElementById("carteBilan").classList.toggle("cache", !(assez && (!dernier || dernier <= dansNJours(-7))));
+
+  // Liste des thèmes, avec le nombre de mots maîtrisés
+  const maitrise = liste => liste.filter(m => infos(m).niveau === NIVEAU_MAX).length;
+  const choix = document.getElementById("choixTheme");
+  choix.innerHTML = "";
+  choix.append(new Option("🌍 Tous les thèmes (" + maitrise(mots[langue]) + "/" + mots[langue].length + " maîtrisés)", "Tous"));
+  for (const t of THEMES) {
+    const liste = mots[langue].filter(m => m.theme === t.nom);
+    choix.append(new Option(t.nom + " (" + maitrise(liste) + "/" + liste.length + ")", t.nom));
+  }
+  choix.value = theme;
+}
+
+// ======================================================================
+// ===== FLASHCARDS =====
+// ======================================================================
+function motSuivant() {
+  motActuel = choisirMot(motActuel);
+  document.getElementById("flip").classList.remove("retourne");
+  document.getElementById("motFr").textContent = motActuel.fr;
+  document.getElementById("motTheme").textContent = motActuel.theme + " · clique pour retourner";
+  document.getElementById("faceDos").innerHTML = "";   // vide pour ne pas voir la réponse pendant que la carte tourne
+  document.getElementById("actions").innerHTML =
+    '<button class="reveler" onclick="reveler()">Voir la réponse</button>';
+  majScore();
+}
+
+function reveler() {
+  const flip = document.getElementById("flip");
+  if (flip.classList.contains("retourne")) return;
+
+  const dos = document.getElementById("faceDos");
+  dos.textContent = motActuel.trad;
+  dos.append(creerBouton("🔊", (e) => { e.stopPropagation(); parler(motActuel.trad); }, "son"));
+  flip.classList.add("retourne");
+  parler(motActuel.trad);
+
+  document.getElementById("actions").innerHTML =
+    '<button class="ok" onclick="repondre(true, this)">Je savais ✓</button>' +
+    '<button class="pasok" onclick="repondre(false, this)">Je ne savais pas ✗</button>';
+}
+
+function repondre(juste, bouton) {
+  document.querySelectorAll("#actions button").forEach(b => b.disabled = true);   // évite de compter 2 fois
+  if (juste) { reussis++; bulle("+1 ✨", bouton, "var(--vert)"); }
+  else       { rates++;   bulle("On le reverra 💪", bouton, "var(--rouge)");
+               animer(document.getElementById("flip"), "secoue"); }
+  noter(motActuel, juste);
+  setTimeout(motSuivant, juste ? 150 : 450);
+}
+
+function majScore() {
+  document.getElementById("score").textContent =
+    "Réussis : " + reussis + "   —   Ratés : " + rates;
+}
+
+// ======================================================================
+// ===== QUIZ =====
+// ======================================================================
+let quizMot = null;
+let quizBons = 0;
+let quizTotal = 0;
+let quizSerie = 0;
+
+function questionSuivante() {
+  quizMot = choisirMot(quizMot);
+  // Les mauvaises réponses viennent du même thème (sinon c'est trop facile)
+  const mauvais = sansDoublons(melanger(mots[langue].filter(m =>
+    m.theme === quizMot.theme && m.trad !== quizMot.trad))).slice(0, 3);
+  const propositions = melanger([quizMot, ...mauvais]);
+
+  const question = document.getElementById("quizMot");
+  question.textContent = quizMot.fr;
+  animer(question, "ecran");
+
+  const zone = document.getElementById("quizChoix");
+  zone.innerHTML = "";
+  for (const m of propositions) {
+    zone.append(creerBouton(m.trad, (e) => verifierQuiz(e.target, m)));
+  }
+  document.getElementById("quizScore").textContent = quizTotal
+    ? "Score : " + quizBons + " / " + quizTotal + (quizSerie >= 2 ? "   —   Série 🔥 " + quizSerie : "")
+    : "";
+}
+
+function verifierQuiz(bouton, choisi) {
+  const juste = (choisi === quizMot);
+  document.querySelectorAll("#quizChoix button").forEach(b => {
+    b.disabled = true;
+    if (b.textContent === quizMot.trad) b.className = "bon";
+  });
+
+  quizTotal++;
+  if (juste) {
+    quizBons++;
+    quizSerie++;
+    bulle(quizSerie >= 3 ? "Série de " + quizSerie + " ! 🔥" : "+1 ✨", bouton, "var(--vert)");
+  } else {
+    quizSerie = 0;
+    bouton.className = "mauvais";
+    animer(document.getElementById("quizCarte"), "secoue");
+  }
+  noter(quizMot, juste);
+  parler(quizMot.trad);
+  setTimeout(() => { if (mode === "Quiz") questionSuivante(); }, juste ? 1000 : 2000);
+}
+
+// ======================================================================
+// ===== JEU DES PAIRES =====
+// ======================================================================
+let jeuGauche = null;     // bouton choisi à gauche (français)
+let jeuDroite = null;     // bouton choisi à droite (traduction)
+let pairesRestantes = 0;
+let jeuErreurs = 0;
+let jeuDebut = 0;
+
+function nouveauJeu() {
+  const selection = sansDoublons(melanger(listeMots())).slice(0, 5);
+  pairesRestantes = selection.length;
+  jeuErreurs = 0;
+  jeuDebut = Date.now();
+  jeuGauche = null;
+  jeuDroite = null;
+
+  const gauche = document.getElementById("jeuGauche");
+  const droite = document.getElementById("jeuDroite");
+  gauche.innerHTML = "";
+  droite.innerHTML = "";
+  for (const m of melanger(selection)) {
+    const b = creerBouton(m.fr, () => cliquerJeu(b, "gauche"));
+    b.mot = m;
+    gauche.append(b);
+  }
+  for (const m of melanger(selection)) {
+    const b = creerBouton(m.trad, () => cliquerJeu(b, "droite"));
+    b.mot = m;
+    droite.append(b);
+  }
+  document.getElementById("jeuMessage").textContent = "";
+}
+
+function cliquerJeu(bouton, cote) {
+  if (bouton.disabled) return;
+  if (cote === "gauche") {
+    if (jeuGauche) jeuGauche.className = "";
+    jeuGauche = bouton;
+  } else {
+    if (jeuDroite) jeuDroite.className = "";
+    jeuDroite = bouton;
+    parler(bouton.mot.trad);
+  }
+  bouton.className = "choisi";
+
+  if (!jeuGauche || !jeuDroite) return;
+
+  const a = jeuGauche, b = jeuDroite;
+  jeuGauche = null;
+  jeuDroite = null;
+
+  if (a.mot === b.mot) {
+    a.className = b.className = "trouve";
+    a.disabled = b.disabled = true;
+    bulle("+1", b, "var(--vert)");
+    ajouterStat(true);
+    pairesRestantes--;
+    if (pairesRestantes === 0) finJeu();
+  } else {
+    jeuErreurs++;
+    a.className = b.className = "faux";
+    animer(a, "secoue");
+    animer(b, "secoue");
+    ajouterStat(false);
+    setTimeout(() => { a.className = ""; b.className = ""; }, 600);
+  }
+}
+
+function finJeu() {
+  const secondes = Math.round((Date.now() - jeuDebut) / 1000);
+  confettis();
+  const zone = document.getElementById("jeuMessage");
+  zone.innerHTML = "";
+  zone.append(
+    "Bravo ! " + secondes + " secondes, " + jeuErreurs + " erreur(s).  ",
+    creerBouton("Rejouer 🔁", nouveauJeu, "gros reveler")
+  );
+}
+
+// ======================================================================
+// ===== CORRECTION DES RÉPONSES ÉCRITES =====
+// ======================================================================
+function sansAccents(s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+
+// Met une réponse "au propre" pour comparer : minuscules, sans ponctuation, sans espaces en trop
+function normaliser(s) {
+  return s.toLowerCase()
+    .replace(/[’‘`]/g, "'")
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\.\.\./g, " ")
+    .replace(/[.,!?;:"«»¿¡]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Toutes les réponses acceptées : "doen / maken" accepte "doen", "maken" ou les deux.
+// En anglais, "the dog" accepte aussi "dog", "to eat" accepte aussi "eat".
+function variantes(attendu) {
+  const base = attendu.replace(/\([^)]*\)/g, "").replace(/\.\.\./g, " ");
+  const liste = [base, ...base.split("/")];
+  if (langue === "en") {
+    for (const v of liste.slice()) {
+      const m = v.trim().match(/^(the|to|a|an) (.+)$/i);
+      if (m) liste.push(m[2]);
+    }
+  }
+  return liste.map(normaliser).filter(Boolean);
+}
+
+// Le texte "propre" à montrer comme bonne réponse
+function reponseAffichee(attendu) {
+  return attendu.replace(/\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
+}
+
+function verifier(reponse, attendu) {
+  const r = normaliser(reponse);
+  const bonnes = variantes(attendu);
+  if (bonnes.includes(r)) return { ok:true };
+  if (bonnes.map(sansAccents).includes(sansAccents(r)))
+    return { ok:true, note:"Presque parfait : attention aux accents → " + reponseAffichee(attendu) };
+  if (langue === "nl") {
+    const m = normaliser(attendu).match(/^(de|het) (.+)$/);
+    if (m && r.replace(/^(de|het|een) /, "") === m[2]) return { ok:false, article:m[1] };
+  }
+  return { ok:false };
+}
+
+// Compare lettre par lettre (pour montrer les fautes en couleur)
+function comparerLettres(a, b) {
+  const A = a.toLowerCase(), B = b.toLowerCase();
+  const t = Array.from({ length:A.length + 1 }, () => new Array(B.length + 1).fill(0));
+  for (let i = A.length - 1; i >= 0; i--)
+    for (let j = B.length - 1; j >= 0; j--)
+      t[i][j] = A[i] === B[j] ? t[i + 1][j + 1] + 1 : Math.max(t[i + 1][j], t[i][j + 1]);
+  const okA = [], okB = [];
+  let i = 0, j = 0;
+  while (i < A.length && j < B.length) {
+    if (A[i] === B[j]) { okA[i] = okB[j] = true; i++; j++; }
+    else if (t[i + 1][j] >= t[i][j + 1]) i++;
+    else j++;
+  }
+  return [okA, okB];
+}
+
+function texteEnCouleur(texte, ok, classeFaute) {
+  const s = el("span", { class:"diff" });
+  [...texte].forEach((c, i) => s.append(el("span", { class: ok[i] ? "l-ok" : classeFaute }, c)));
+  return s;
+}
+
+// ======================================================================
+// ===== EXERCICE : ÉCRIRE (ou DICTÉE si audio = true) =====
+// ======================================================================
+// fin(juste) est appelé quand l'élève clique sur "Suivant".
+// juste = true seulement si c'était bon du premier coup.
+function exoEcrire(zone, item, fin, audio) {
+  zone.innerHTML = "";
+  const input = el("input", { class:"saisie", autocomplete:"off", autocapitalize:"off",
+                              spellcheck:"false", placeholder:"Tape ta réponse…" });
+  const bouton = el("button", { class:"gros reveler" }, "Valider");
+  const retour = el("div", { class:"correction" });
+  let etape = "question", copies = 0, juste = false;
+
+  let haut;
+  if (audio) {
+    haut = el("div", {},
+      alerteVoix(),
+      el("div", { class:"petit centre" }, "Écoute et écris ce que tu entends en " + nomLangue()),
+      el("div", { class:"ecoute" },
+        el("button", { class:"gros-son", title:"Réécouter", onclick: () => { parler(item.trad); input.focus(); } }, "🔊"),
+        el("button", { class:"lent", onclick: () => { parler(item.trad, 0.55); input.focus(); } }, "🐢 Lentement")));
+    setTimeout(() => parler(item.trad), 350);
+  } else {
+    haut = el("div", {},
+      el("div", { class:"petit centre" }, "Écris en " + nomLangue() + " · " + item.theme),
+      el("div", { class:"question" }, item.fr));
+  }
+
+  function valider() {
+    if (etape === "fini") { fin(juste); return; }
+    const rep = input.value;
+    if (!rep.trim()) { input.focus(); return; }
+    const r = verifier(rep, item.trad);
+    const bonne = reponseAffichee(item.trad);
+
+    if (etape === "question") {
+      retour.innerHTML = "";
+      if (r.ok) {
+        juste = true;
+        retour.append(el("div", { class:"bravo" }, "✓ Correct !"),
+                      r.note ? el("div", { class:"petit" }, r.note) : null,
+                      audio ? el("div", { class:"petit" }, "= " + item.fr) : null);
+        bulle("+1 ✨", input, "var(--vert)");
+        noter(item, true);
+        parler(item.trad);
+        terminer();
+      } else {
+        juste = false;
+        noter(item, false);
+        parler(item.trad);
+        animer(input, "secoue");
+        const [okRep, okBonne] = comparerLettres(rep.trim(), bonne);
+        retour.append(
+          r.article
+            ? el("div", { class:"erreur" }, "Attention à l'article ! C'est « " + r.article + " » : " + bonne)
+            : el("div", { class:"erreur" }, "Pas tout à fait…"),
+          el("div", {}, el("span", { class:"petit" }, "Toi : "), texteEnCouleur(rep.trim(), okRep, "l-trop")),
+          el("div", {}, el("span", { class:"petit" }, "Juste : "), texteEnCouleur(bonne, okBonne, "l-manque")),
+          audio ? el("div", { class:"petit" }, "= " + item.fr) : null,
+          el("div", { class:"petit" }, "✍️ Maintenant, réécris-le juste 3 fois :"),
+          el("div", { class:"copies" }, "○○○"));
+        etape = "copie";
+        input.value = "";
+        input.placeholder = "Réécris : " + bonne;
+        input.focus();
+      }
+    } else if (etape === "copie") {
+      if (r.ok) {
+        copies++;
+        retour.querySelector(".copies").textContent = "●".repeat(copies) + "○".repeat(3 - copies);
+        input.value = "";
+        if (copies === 3) { bulle("Bien retenu 💪", input, "var(--vert)"); terminer(); }
+      } else {
+        animer(input, "secoue");
+        input.select();
+      }
+    }
+  }
+
+  function terminer() {
+    etape = "fini";
+    input.disabled = true;
+    bouton.textContent = "Suivant →";
+    bouton.focus();
+  }
+
+  bouton.onclick = valider;
+  input.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); valider(); } };
+  zone.append(haut, el("div", { class:"ligne-saisie" }, input, bouton), retour);
+  input.focus();
+}
+
+// ======================================================================
+// ===== EXERCICE : CONSTRUIRE UNE PHRASE =====
+// ======================================================================
+function exoPhrase(zone, item, fin) {
+  zone.innerHTML = "";
+  const morceaux = item.trad.replace(/[.?!]+$/, "").split(/\s+/);
+  const ligne = el("div", { class:"ligne-phrase" });
+  const banque = el("div", { class:"banque" });
+  const retour = el("div", { class:"correction centre" });
+  const bouton = el("button", { class:"gros reveler" }, "Vérifier");
+  let fini = false, juste = false;
+
+  for (const m of melanger(morceaux)) {
+    const t = el("button", { class:"tuile-mot" }, m);
+    t.onclick = () => { if (!fini) (t.parentNode === banque ? ligne : banque).append(t); };
+    banque.append(t);
+  }
+
+  bouton.onclick = () => {
+    if (fini) { fin(juste); return; }
+    if (banque.children.length) { bulle("Place tous les mots !", bouton, "var(--gris)"); return; }
+    const rep = [...ligne.children].map(t => t.textContent).join(" ");
+    juste = normaliser(rep) === normaliser(item.trad);
+    fini = true;
+    ligne.classList.add(juste ? "juste" : "faux");
+    if (juste) {
+      retour.append(el("div", { class:"bravo" }, "✓ Parfait !"));
+      bulle("+1 ✨", bouton, "var(--vert)");
+    } else {
+      animer(ligne, "secoue");
+      retour.append(el("div", { class:"erreur" }, "Pas tout à fait. La bonne phrase :"),
+                    el("div", { class:"solution" }, item.trad));
+    }
+    retour.append(el("button", { class:"mini-son", onclick: () => parler(item.trad) }, "🔊 Réécouter"));
+    parler(item.trad);
+    noter(item, juste);
+    bouton.textContent = "Suivant →";
+    bouton.focus();
+  };
+
+  zone.append(
+    el("div", { class:"petit centre" }, "Remets les mots dans l'ordre (clique sur les mots)"),
+    el("div", { class:"question" }, item.fr),
+    ligne, banque,
+    el("div", { class:"actions" }, bouton),
+    retour);
+}
+
+function lancerExo(etape, zone, fin) {
+  if (etape.type === "phrase") exoPhrase(zone, etape.item, fin);
+  else exoEcrire(zone, etape.item, fin, etape.type === "dictee");
+}
+
+// Une série d'exercices avec une barre de progression (leçon, révision, bilan...)
+function lancerSerie(zone, etapes, finSerie) {
+  const compteur = el("span");
+  const rempli = el("div");
+  const zoneExo = el("div");
+  zone.innerHTML = "";
+  zone.append(el("div", { class:"carte" },
+    el("div", { class:"serie-haut" }, compteur, el("div", { class:"barre" }, rempli)),
+    zoneExo));
+  let i = 0, bons = 0;
+  function suivante() {
+    rempli.style.width = (i / etapes.length * 100) + "%";
+    if (i >= etapes.length) { finSerie(bons, etapes.length); return; }
+    compteur.textContent = (i + 1) + " / " + etapes.length;
+    lancerExo(etapes[i], zoneExo, (juste) => { if (juste) bons++; i++; suivante(); });
+  }
+  suivante();
+}
+
+// ======================================================================
+// ===== MODES LIBRES : ÉCRIRE, DICTÉE, PHRASES =====
+// ======================================================================
+function modeLibre(type) {
+  const zone = zoneTravail();
+  let pool;
+  if (type === "ecrire") pool = listeMots().filter(okPourEcrire);
+  if (type === "dictee") pool = [...listeMots().filter(okPourDictee), ...phrasesDebloquees()];
+  if (type === "phrase") pool = phrasesDebloquees();
+
+  const info = el("div", { class:"score" });
+  const exo = el("div");
+  zone.append(el("div", { class:"carte" }, exo, info));
+  if (type === "phrase") {
+    zone.append(el("div", { class:"petit centre", style:"margin-top:12px" },
+      "Les phrases viennent des leçons que tu as débloquées (" + pool.length + " phrases). Avance dans ton parcours pour en avoir plus !"));
+  }
+
+  let bons = 0, total = 0, precedent = null;
+  function suivant() {
+    const item = choisirDans(pool, precedent);
+    precedent = item;
+    lancerExo({ type, item }, exo, (juste) => {
+      total++;
+      if (juste) bons++;
+      info.textContent = "Cette fois : " + bons + " / " + total + " du premier coup";
+      suivant();
+    });
+  }
+  suivant();
+}
+
+// ======================================================================
+// ===== PARCOURS EN LEÇONS =====
+// ======================================================================
+let leconActuelle = 0;
+
+function afficherParcours() {
+  const zone = zoneTravail();
+  zone.append(el("div", { class:"petit", style:"margin-bottom:14px" },
+    "3 mois pour avoir les bases en " + nomLangue() + ". Réussis chaque leçon à " + SCORE_POUR_REUSSIR +
+    " % pour débloquer la suivante. Clique sur les mots en couleur dans les explications pour les écouter."));
+
+  const noms = { 1:"Mois 1 — Survivre", 2:"Mois 2 — Le quotidien", 3:"Mois 3 — Raconter" };
+  const actuelle = prochaineLecon();
+  let delai = 0;
+
+  for (const numMois of [1, 2, 3]) {
+    const bloc = el("div", { class:"mois" }, el("h3", {}, noms[numMois]));
+    LECONS.forEach((l, i) => {
+      if (l.mois !== numMois) return;
+      const ouverte = leconOuverte(i), faite = leconReussie(i);
+      const b = el("button", { class:"lecon-item" + (faite ? " fait" : "") + (i === actuelle ? " actuelle" : "") },
+        el("span", { class:"badge" }, faite ? "✓" : ouverte ? String(i + 1) : "🔒"),
+        el("span", {}, "Leçon " + (i + 1) + " : " + l.titre,
+          el("small", {}, faite ? "Réussie · meilleur score " + scoreLecon(i) + " %"
+                        : ouverte ? (scoreLecon(i) ? "Dernier essai " + scoreLecon(i) + " % · il faut " + SCORE_POUR_REUSSIR + " %" : "À faire")
+                        : "Réussis la leçon d'avant pour l'ouvrir")));
+      b.style.animationDelay = (delai++ * 30) + "ms";
+      b.disabled = !ouverte;
+      b.onclick = () => { leconActuelle = i; changerMode("Lecon"); };
+      bloc.append(b);
+    });
+    (LECONS_A_VENIR[numMois] || []).forEach(titre => {
+      const b = el("button", { class:"lecon-item", disabled:"" },
+        el("span", { class:"badge" }, "🔒"),
+        el("span", {}, titre, el("small", {}, "Bientôt")));
+      b.style.animationDelay = (delai++ * 30) + "ms";
+      bloc.append(b);
+    });
+    zone.append(bloc);
+  }
+}
+
+function afficherLecon() {
+  const i = leconActuelle, l = LECONS[i];
+  document.getElementById("titreTravail").textContent = "📘 Leçon " + (i + 1) + " : " + l.titre;
+  const zone = zoneTravail();
+
+  // Étape 1 : l'explication
+  const explication = el("div", { class:"explication" });
+  explication.innerHTML = l.explication[langue];
+  explication.querySelectorAll("em").forEach(e => {
+    e.classList.add("dire");
+    e.title = "Clique pour écouter";
+    e.onclick = () => parler(e.textContent);
+  });
+
+  // Étape 2 : les mots et les phrases de la leçon
+  const tableMots = el("table", { class:"liste-mots" });
+  for (const m of [...motsDeLecon(i), ...phrases[langue].filter(p => p.lecon === i)]) {
+    tableMots.append(el("tr", {},
+      el("td", {}, m.fr),
+      el("td", {}, el("b", {}, m.trad)),
+      el("td", {}, el("button", { class:"mini-son", title:"Écouter", onclick: () => parler(m.trad) }, "🔊"))));
+  }
+
+  zone.append(
+    alerteVoix(),
+    el("div", { class:"carte" }, el("h3", { style:"margin-top:0" }, "1. Comprendre"), explication),
+    el("div", { class:"carte", style:"margin-top:16px" },
+      el("h3", { style:"margin-top:0" }, "2. Les mots et phrases à retenir"),
+      el("div", { class:"petit" }, "Lis-les et écoute-les. Ensuite, les exercices !"),
+      tableMots),
+    el("div", { class:"actions" },
+      el("button", { class:"gros ok", onclick: () => exercicesLecon(i) }, "3. Commencer les exercices →")));
+}
+
+function exercicesLecon(i) {
+  const motsL = melanger(motsDeLecon(i).filter(okPourEcrire));
+  const phr = melanger(phrases[langue].filter(p => p.lecon === i));
+  const etapes = [
+    ...motsL.slice(0, 4).map(item => ({ type:"ecrire", item })),
+    ...phr.slice(0, 3).map(item => ({ type:"phrase", item })),
+    ...phr.slice(3, 6).map(item => ({ type:"dictee", item }))
+  ];
+  window.scrollTo({ top:0, behavior:"smooth" });
+  lancerSerie(zoneTravail(), etapes, (bons, total) => {
+    const score = Math.round(bons / total * 100);
+    const avant = scoreLecon(i);
+    suivi.lecons[langue][i] = Math.max(avant, score);
+    sauver();
+    const reussi = score >= SCORE_POUR_REUSSIR;
+    if (reussi) confettis();
+    const zone = zoneTravail();
+    zone.innerHTML = "";
+    zone.append(el("div", { class:"carte centre" },
+      el("div", { style:"font-size:3rem" }, reussi ? "🎉" : "💪"),
+      el("h2", {}, (reussi ? "Leçon réussie ! " : "Presque ! ") + score + " %"),
+      el("div", { class:"petit" }, reussi
+        ? (i + 1 < LECONS.length ? "La leçon " + (i + 2) + " est débloquée." : "Tu as fini le mois 1, bravo !")
+        : "Il faut " + SCORE_POUR_REUSSIR + " % pour débloquer la suite. Relis l'explication et réessaie."),
+      el("div", { class:"actions" },
+        reussi && i + 1 < LECONS.length
+          ? el("button", { class:"gros ok", onclick: () => { leconActuelle = i + 1; changerMode("Lecon"); } }, "Leçon suivante →")
+          : el("button", { class:"gros reveler", onclick: () => changerMode("Lecon") }, "Recommencer la leçon"),
+        el("button", { class:"gris", onclick: () => changerMode("Parcours") }, "Mon parcours"))));
+  });
+}
+
+// ======================================================================
+// ===== RÉVISION DU JOUR, CARNET D'ERREURS, BILAN =====
+// ======================================================================
+function toutPourLangue() { return [...mots[langue].filter(okPourEcrire), ...phrases[langue]]; }
+
+function aReviserAujourdhui() {
+  return toutPourLangue().filter(aReviser).sort((a, b) => infos(a).niveau - infos(b).niveau);
+}
+
+function etapePour(item) {
+  return { type: item.phrase ? "phrase" : "ecrire", item };
+}
+
+function ecranFin(icone, titre, texte) {
+  const zone = zoneTravail();
+  zone.innerHTML = "";
+  zone.append(el("div", { class:"carte centre" },
+    el("div", { style:"font-size:3rem" }, icone),
+    el("h2", {}, titre),
+    el("div", { class:"petit" }, texte),
+    el("div", { class:"actions" }, el("button", { class:"gros reveler", onclick: () => changerMode("Accueil") }, "Retour au menu"))));
+}
+
+function lancerRevision() {
+  const liste = aReviserAujourdhui().slice(0, 15);
+  if (!liste.length) {
+    ecranFin("✅", "Rien à revoir aujourd'hui !", "Tes mots reviendront au bon moment. Fais une leçon ou un exercice en attendant.");
+    return;
+  }
+  lancerSerie(zoneTravail(), melanger(liste).map(etapePour), (bons, total) => {
+    if (bons === total) confettis();
+    ecranFin("🔁", "Révision terminée : " + bons + " / " + total,
+      "Les mots réussis reviendront dans quelques jours, les autres demain. C'est comme ça qu'on retient pour toujours !");
+  });
+}
+
+function lancerCarnet() {
+  const liste = toutPourLangue().filter(dansCarnet).sort((a, b) => erreurs(b) - erreurs(a)).slice(0, 10);
+  if (!liste.length) {
+    ecranFin("🌟", "Ton carnet d'erreurs est vide !", "Continue comme ça.");
+    return;
+  }
+  lancerSerie(zoneTravail(), melanger(liste).map(etapePour), (bons, total) =>
+    ecranFin("📕", "Terminé : " + bons + " / " + total, "Un mot sort du carnet quand tu l'as réussi plusieurs fois de suite."));
+}
+
+function lancerBilan() {
+  const vus = [...mots[langue].filter(okPourEcrire), ...phrases[langue]].filter(m => infos(m).vus > 0);
+  if (vus.length < 10) {
+    ecranFin("📝", "Pas encore de bilan", "Travaille encore un peu : il faut avoir vu au moins 10 mots ou phrases.");
+    return;
+  }
+  const etapes = melanger(vus).slice(0, 20).map(item => {
+    if (item.phrase) return { type: Math.random() < .5 ? "phrase" : "dictee", item };
+    return { type: okPourDictee(item) && Math.random() < .4 ? "dictee" : "ecrire", item };
+  });
+  lancerSerie(zoneTravail(), etapes, (bons, total) => {
+    const score = Math.round(bons / total * 100);
+    const liste = suivi.bilans[langue];
+    const precedent = liste.length ? liste[liste.length - 1].score : null;
+    liste.push({ jour: cleJour(new Date()), score });
+    sauver();
+    if (precedent === null || score > precedent) confettis();
+    ecranFin("📝", "Ton bilan : " + score + " %",
+      precedent === null ? "C'est ton premier bilan. Refais-en un la semaine prochaine pour voir tes progrès !"
+      : score > precedent ? "+" + (score - precedent) + " points depuis le dernier bilan 🚀"
+      : "Le dernier était à " + precedent + " %. Fais tes révisions du jour et ça va remonter 💪");
+  });
+}
+
+// ======================================================================
+// ===== PAGE PROGRÈS =====
+// ======================================================================
+function afficherProgres() {
+  const liste = listeMots();
+  let maitrises = 0;
+  const table = document.getElementById("progresTable");
+  table.innerHTML = "";
+
+  for (const m of liste) {
+    const p = infos(m);
+    if (p.niveau === NIVEAU_MAX) maitrises++;
+    const ligne = table.insertRow();
+    ligne.insertCell().textContent = m.fr;
+    ligne.insertCell().textContent = m.trad;
+    const points = ligne.insertCell();
+    points.className = "points";
+    points.textContent = "●".repeat(p.niveau) + "○".repeat(NIVEAU_MAX - p.niveau);
+    const st = ligne.insertCell();
+    st.className = "petit";
+    st.textContent = p.vus ? p.reussis + "/" + p.vus : "jamais vu";
+  }
+
+  const bilans = suivi.bilans[langue];
+  const minAuj = Math.floor(secondesJour(cleJour(new Date())) / 60);
+  const tuiles = [
+    [minAuj + " min", "aujourd'hui"],
+    ["🔥 " + serieJours(), "jours d'affilée"],
+    [maitrises + "/" + liste.length, "mots maîtrisés"],
+    [bilans.length ? bilans[bilans.length - 1].score + " %" : "—", "dernier bilan"]
+  ];
+  document.getElementById("tuilesStats").innerHTML = "";
+  tuiles.forEach(([valeur, texte], i) => {
+    const t = el("div", { class:"stat ecran" }, el("b", {}, valeur), el("span", {}, texte));
+    t.style.animationDelay = i * 70 + "ms";
+    document.getElementById("tuilesStats").append(t);
+  });
+
+  // Bilans
+  const zoneBilans = document.getElementById("listeBilans");
+  zoneBilans.innerHTML = "";
+  document.getElementById("titreBilans").textContent = "📝 Mes bilans en " + nomLangue();
+  if (!bilans.length) {
+    zoneBilans.append(el("div", { class:"petit", style:"margin-top:8px" },
+      "Pas encore de bilan. Il apparaîtra dans le menu une fois par semaine."));
+  } else {
+    const t = el("table", { class:"tableau" });
+    for (const b of bilans.slice(-8).reverse()) {
+      const barre = el("div", { class:"mini-barre" }, el("div"));
+      barre.firstChild.style.width = b.score + "%";
+      const date = new Date(b.jour + "T12:00").toLocaleDateString("fr-FR", { day:"numeric", month:"short" });
+      t.append(el("tr", {}, el("td", {}, date), el("td", { style:"width:60%" }, barre), el("td", {}, el("b", {}, b.score + " %"))));
+    }
+    zoneBilans.append(t);
+  }
+  zoneBilans.append(el("div", { class:"actions" },
+    el("button", { class:"gris", onclick: () => changerMode("Bilan") }, "Faire un bilan maintenant")));
+
+  // Carnet d'erreurs
+  const carnet = toutPourLangue().filter(dansCarnet).sort((a, b) => erreurs(b) - erreurs(a));
+  const zoneCarnet = document.getElementById("carnet");
+  zoneCarnet.innerHTML = "";
+  if (!carnet.length) {
+    zoneCarnet.append(el("div", { class:"petit", style:"margin-top:8px" }, "Vide pour l'instant 🌟"));
+  } else {
+    const t = el("table", { class:"tableau" });
+    for (const m of carnet.slice(0, 15)) {
+      t.append(el("tr", {}, el("td", {}, m.fr), el("td", {}, el("b", {}, m.trad)),
+                            el("td", { class:"petit" }, erreurs(m) + " erreurs")));
+    }
+    zoneCarnet.append(t, el("div", { class:"actions" },
+      el("button", { class:"gros pasok", onclick: () => changerMode("Carnet") }, "Travailler mes erreurs (" + carnet.length + ")")));
+  }
+
+  document.getElementById("titreMots").textContent =
+    "Tes mots — " + (theme === "Tous" ? "tous les thèmes" : theme);
+  dessinerGraphique();
+}
+
+function dessinerGraphique() {
+  // Les 14 derniers jours, du plus ancien à aujourd'hui (les deux langues ensemble)
+  const jours = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const j = cleJour(d);
+    const en = statJour(j, "en"), nl = statJour(j, "nl");
+    jours.push({ date:d, minutes: Math.floor(secondesJour(j) / 60),
+                 justes: en.justes + nl.justes, total: en.total + nl.total });
+  }
+
+  const L = 560, H = 220, GAUCHE = 30, DROITE = 6, HAUT = 14, BAS = 26;
+  const maxi = Math.max(OBJECTIF_MIN + 5, Math.ceil(Math.max(...jours.map(j => j.minutes)) / 10) * 10);
+  const col = (L - GAUCHE - DROITE) / jours.length;
+  const larg = col * 0.6;
+  const y = v => H - BAS - v / maxi * (H - BAS - HAUT);
+
+  let svg = '<svg viewBox="0 0 ' + L + ' ' + H + '" role="img" aria-label="Minutes de travail par jour sur 14 jours">';
+
+  // Lignes de fond + chiffres à gauche
+  for (const v of [0, maxi / 2, maxi]) {
+    svg += '<line class="grille" x1="' + GAUCHE + '" x2="' + (L - DROITE) + '" y1="' + y(v) + '" y2="' + y(v) + '"/>'
+         + '<text class="axe" text-anchor="end" x="' + (GAUCHE - 6) + '" y="' + (y(v) + 4) + '">' + v + '</text>';
+  }
+
+  jours.forEach((j, i) => {
+    const x = GAUCHE + i * col;
+    // Zone invisible pour la souris (plus grande que la barre)
+    svg += '<rect class="cible" data-i="' + i + '" x="' + x + '" y="' + HAUT + '" width="' + col
+         + '" height="' + (H - BAS - HAUT) + '" rx="6"/>';
+
+    // La barre, arrondie en haut
+    if (j.minutes > 0) {
+      const g = x + (col - larg) / 2, d = g + larg, bas = H - BAS, haut = y(j.minutes);
+      const r = Math.min(4, larg / 2, bas - haut);
+      svg += '<path class="barre-graph" style="animation-delay:' + i * 35 + 'ms" d="M' + g + ',' + bas
+           + ' V' + (haut + r) + ' Q' + g + ',' + haut + ' ' + (g + r) + ',' + haut
+           + ' H' + (d - r) + ' Q' + d + ',' + haut + ' ' + d + ',' + (haut + r) + ' V' + bas + ' Z"/>';
+    }
+
+    // Date en bas (un jour sur deux, et toujours aujourd'hui)
+    if ((13 - i) % 2 === 0) {
+      svg += '<text class="axe" text-anchor="middle" x="' + (x + col / 2) + '" y="' + (H - 8) + '">'
+           + (i === 13 ? "auj." : j.date.getDate()) + '</text>';
+    }
+  });
+
+  // Ligne de l'objectif
+  svg += '<line class="repere" x1="' + GAUCHE + '" x2="' + (L - DROITE) + '" y1="' + y(OBJECTIF_MIN) + '" y2="' + y(OBJECTIF_MIN) + '"/>'
+       + '<text class="axe" text-anchor="end" x="' + (L - DROITE) + '" y="' + (y(OBJECTIF_MIN) - 5) + '">objectif ' + OBJECTIF_MIN + ' min</text>';
+
+  svg += '</svg><div class="infobulle" id="infobulle"></div>';
+
+  const zone = document.getElementById("graphique");
+  zone.innerHTML = svg;
+
+  // Infobulle au survol
+  const info = document.getElementById("infobulle");
+  zone.querySelectorAll(".cible").forEach(c => {
+    const j = jours[c.dataset.i];
+    c.onmousemove = (e) => {
+      const r = zone.getBoundingClientRect();
+      const date = j.date.toLocaleDateString("fr-FR", { weekday:"short", day:"numeric", month:"short" });
+      info.innerHTML = "<b>" + date + "</b><br>"
+        + (j.minutes || j.total
+            ? j.minutes + " min de travail<br>" + j.justes + " justes sur " + j.total + " réponses"
+            : "Pas travaillé ce jour-là");
+      info.style.left = Math.min(Math.max(e.clientX - r.left, 80), r.width - 80) + "px";
+      info.style.top = (e.clientY - r.top) + "px";
+      info.style.opacity = 1;
+    };
+    c.onmouseleave = () => { info.style.opacity = 0; };
+  });
+}
+
+function effacerProgres() {
+  if (!confirm("Effacer tous tes progrès en " + nomLangue() + " (mots, leçons, bilans) ?")) return;
+  for (const k in progres) if (k.startsWith(langue + "|")) delete progres[k];
+  for (const jour in stats) delete stats[jour][langue];
+  suivi.lecons[langue] = {};
+  suivi.bilans[langue] = [];
+  sauver();
+  afficherProgres();
+  majEntete();
+}
+
+// ===== AU DÉMARRAGE =====
+if ("speechSynthesis" in window) speechSynthesis.getVoices();   // charge la liste des voix
+changerLangue("en");
+</script>
+</body>
+</html>
